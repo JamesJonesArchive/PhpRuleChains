@@ -24,6 +24,7 @@ class Chain {
                 if(isset($r[$key])) {
                     switch($key) {
                         case "executeType":
+                            print("$key is ".$r[$key]."\n");
                             $rule->setExecuteType($r[$key]);
                             break;
                         case "resultType":
