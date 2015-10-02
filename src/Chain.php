@@ -20,7 +20,7 @@ class Chain {
         $this->rules = $rules;
         $this->rules = \array_map(function($r) {
             $class = "\\CF\\RuleChains\\".$r['type'];
-            println($class);
+            print($class."\n");
             return get_class_vars("\\CF\\RuleChains\\".$r['type']);
         }, $rules);
         print_r($this->rules);
