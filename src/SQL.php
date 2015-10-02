@@ -14,9 +14,9 @@ namespace CF\RuleChains;
  * @author james
  */
 class SQL extends Rule {
-    
+    public $rule;
     public function execute() {
-        
+        self::getConnection($this->name);
     }
 
 //put your code here

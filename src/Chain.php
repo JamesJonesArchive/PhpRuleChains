@@ -18,5 +18,9 @@ class Chain {
     public function __construct(array $config,array $rules) {
         ConnectionsRC::setConfig($config);
         $this->rules = $rules;
+        $this->rules = \array_map(function($r) {
+            return get_class_vars("CF\RuleChains".$r['type']);
+        }, $rules);
+        print_r($this->rules);
     }
 }
