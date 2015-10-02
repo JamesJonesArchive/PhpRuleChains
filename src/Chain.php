@@ -19,7 +19,7 @@ class Chain {
         ConnectionsRC::setConfig($config);
         $this->rules = $rules;
         $this->rules = \array_map(function($r) {
-            return get_class_vars("CF\RuleChains".$r['type']);
+            return get_class_vars("\CF\RuleChains".$r['type']);
         }, $rules);
         print_r($this->rules);
     }
