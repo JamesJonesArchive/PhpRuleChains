@@ -58,6 +58,5 @@ class ConnectionsRC {
      */
     public static function setConfig(array $config) {
         self::$config = $config;
-        self::$connections = [];
     }
 }

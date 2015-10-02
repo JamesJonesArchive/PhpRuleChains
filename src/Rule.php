@@ -19,6 +19,9 @@ abstract class Rule {
     /**
      * @var \Closure
      */
+    public $executeType;
+    public $resultType;
+    public $linkType;
     private $inputReorder;
     /**
      * @var \Closure
@@ -28,6 +31,10 @@ abstract class Rule {
      * @var mixed
      */
     private $input = [];
+    /**
+     * @var mixed
+     */
+    private $output = [];
     /**
      * @var \CF\RuleChains  
      */
@@ -73,12 +80,56 @@ abstract class Rule {
         $this->input = $input;
     }
     /**
+     * Sets the output object/array
+     * 
+     * @param mixed $output
+     */
+    public function setOutput($output =[]) {
+        $this->output = $output;
+    }
+    /**
      * Get the stored input object/array
      * 
      * @return mixed
      */
     public function getInput() {
         return $this->input;
+    }
+    /**
+     * Properly sets the execute type
+     * 
+     * @param type $executeType
+     */
+    public function setExecuteType($executeType) {
+        if(in_array(strtoupper($executeType),["ROW","NONE"])) {
+            $executeType=strtoupper($executeType);
+        } else {
+            $executeType = "NONE";
+        }                
+    }
+    /**
+     * Properly sets the result type
+     * 
+     * @param type $resultType
+     */
+    public function setResultType($resultType) {
+        if(in_array(strtoupper($resultType),["ROW","RECORDSET","NONE"])) {
+            $this->resultType=strtoupper($resultType);
+        } else {
+            $this->resultType = "NONE";
+        }                
+    }
+    /**
+     * Properly sets the link type
+     * 
+     * @param type $linkType
+     */
+    public function setLinkType($linkType) {
+        if(in_array(strtoupper($linkType),["NONE","LOOP","ENDLOOP","NEXT"])) {
+            $this->linkType=strtoupper($linkType);
+        } else {
+            $this->linkType = "NONE";
+        }                
     }
     /**
      * Get the specified connection by type and name. If it doesn't exist

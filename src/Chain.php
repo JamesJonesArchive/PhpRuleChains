@@ -17,17 +17,47 @@ class Chain {
     private $rules;
     public function __construct(array $config,array $rules) {
         ConnectionsRC::setConfig($config);
-        $this->rules = $rules;
         $this->rules = \array_map(function($r) {
             $class = "\\CF\\RuleChains\\".$r['type'];
             $rule = new $class;
             foreach (\array_keys(\get_class_vars("\\CF\\RuleChains\\".$r['type'])) as $key) {
-                $rule->{$key} = $r[$key];
+                if(isset($r[$key])) {
+                    switch($key) {
+                        case "executeType":
+                            $rule->setExecuteType($r[$key]);
+                            break;
+                        case "resultType":
+                            $rule->setResultType($r[$key]);
+                            break;
+                        case "linkType":
+                            $rule->setResultType($r[$key]);
+                            break;
+                        default:
+                            $rule->{$key} = $r[$key];
+                            break;
+                    }
+                }
             }
             return $rule;
-//            print($class."\n");
-//            return \array_keys(\get_class_vars("\\CF\\RuleChains\\".$r['type']));
         }, $rules);
         print_r($this->rules);
+    }
+    public function execute() {
+        for($i=0; $i < count($this->rules); $i++) {
+            $this->rules[$i]->execute();
+            switch($this->rules[$i]->linkType) {
+                case "NONE": 
+                    break;
+                case "LOOP": 
+                    break;
+                case "ENDLOOP": 
+                    break;
+                case "NEXT":
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
+        }
     }
 }
