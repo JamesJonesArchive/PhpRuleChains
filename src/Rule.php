@@ -12,12 +12,42 @@ namespace CF\RuleChains;
  * @author James Jones <jamjon3@gmail.com>
  */
 abstract class Rule {
+    /**
+     * @var string
+     */
     public $name;
+    /**
+     * @var \Closure
+     */
     private $inputReorder;
+    /**
+     * @var \Closure
+     */
     private $outputReorder;
+    /**
+     * @var mixed
+     */
     private $input = [];
-    private static $connections; // MySQLi-Connection, same for all subclasses
-    private static $config;
+    /**
+     * @var \CF\RuleChains  
+     */
+    private $connectionsRC;
+    /**
+     * @var array
+     */
+    protected static $connections; // MySQLi-Connection, same for all subclasses
+    /**
+     * @var array
+     */
+    protected static $config;
+    /**
+     * Set the connections into the rule
+     * 
+     * @param type $connectionsRC
+     */
+    public function setConnectionsRC(\CF\RuleChains $connectionsRC) {
+        $this->connectionsRC = $connectionsRC;
+    }
     /**
      * Sets the input reorder closure
      * 
@@ -60,33 +90,8 @@ abstract class Rule {
      * @return mixed
      * @throws Exception
      */
-    public static function getConnection(string $type,string $name) {
-        if(!isset(self::$config)) {
-            self::$config = new Configula\Config('/path/to/app/config');
-        }
-        if(!isset(self::$connections)) {
-            self::$connections = [];
-        }
-        if(!isset(self::$connections[$type])) {
-            self::$connections[$type] = [];
-        }
-        if(!isset(self::$connections[$type][$name])) {
-            // Try to load it from config            
-            switch ($type) {
-                case 'sql':
-                    if(!isset(self::$config->getItem('ruleChainsConnections', [])[$type])) {
-                        throw new Exception("No config for connection type: $type");
-                    } else if(!isset(self::$config->getItem('ruleChainsConnections', [])[$type][$name])) {
-                        throw new Exception("No config for named connection name '$name' for type '$type'");
-                    }
-                    self::$connections[$type][$name] = new \medoo(self::$config->ruleChainsConnections[$type][$name]); 
-                    break;
-                default:
-                    throw new Exception("No connection type defined for type: $type");
-                    break;
-            }
-        }
-        return self::$connections[$type][$name];        
+    public static function getConnection(string $name) {
+        return ConectionsRC::getConnection(get_class($this), $name);
     }
     /**
      * Executes the current rule

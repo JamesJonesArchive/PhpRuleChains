@@ -9,7 +9,9 @@
     ],
     "require": {
         "catfan/medoo": "v0.9.8",
-        "caseyamcl/configula": "v2.3.1"
+        "caseyamcl/configula": "v2.3.1",
+        "ext-mysql": "*",
+        "ext-pgsql": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
