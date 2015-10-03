@@ -30,7 +30,7 @@ abstract class Rule {
     /**
      * @var mixed
      */
-    private $input = [];
+    public $input = [];
     /**
      * @var mixed
      */
@@ -60,16 +60,30 @@ abstract class Rule {
      * 
      * @param \Closure $inputReorder
      */
-    public function setInputReorder(\Closure $inputReorder) {
-        $this->inputReorder = Closure::bind($inputReorder, $this, get_class());
+    public function setInputReorder($inputReorder) {
+        if ($inputReorder instanceOf Closure) {
+            $this->inputReorder = \Closure::bind($inputReorder, $this, \get_class());
+        } else if((!isset($inputReorder))?(strlen(''.trim($inputReorder).'') > 1):false) {
+            eval('$_function = function($input) {\n '.$inputReorder.'\n };');
+            if (isset($_function) AND $_function instanceOf Closure) {
+                $this->inputReorder = \Closure::bind($_function, $this, \get_class());
+            }    
+        }
     }
     /**
      * Sets the output reorder closure
      * 
      * @param \Closure $outputReorder
      */
-    public function setOutputReorder(\Closure $outputReorder) {
-        $this->outputReorder = Closure::bind($outputReorder, $this, get_class());
+    public function setOutputReorder($outputReorder) {
+        if ($outputReorder instanceOf Closure) {
+            $this->outputReorder = \Closure::bind($outputReorder, $this, \get_class());
+        } else if((!isset($outputReorder))?(strlen(''.trim($outputReorder).'') > 1):false) {
+            eval('$_function = function($output) {\n '.$outputReorder.'\n };');
+            if (isset($_function) AND $_function instanceOf Closure) {
+                $this->outputReorder = \Closure::bind($_function, $this, \get_class());
+            }    
+        }
     }
     /**
      * Sets the input object/array

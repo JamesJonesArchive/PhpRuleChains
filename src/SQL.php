@@ -19,10 +19,14 @@ class SQL extends Rule {
      * Executes the SQL Rule
      */
     public function execute() {
-        $stmt = self::getConnection($this->name)->prepare($this->rule);
+        $rule = $this->rule;
+        foreach(((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input) as $key => $value) {
+            $rule = str_replace('$'.$key, $value, $rule);            
+        }            
+        $stmt = self::getConnection($this->name)->prepare($rule);
         switch($this->executeType) {
             case "ROW":
-                foreach ($this->input as $key => $value) {
+                foreach (((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input) as $key => $value) {
                     $stmt->bindParam(":".$key, $value);
                 }
                 break;

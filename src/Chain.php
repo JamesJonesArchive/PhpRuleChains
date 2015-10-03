@@ -33,6 +33,12 @@ class Chain {
                         case "linkType":
                             $rule->setResultType($r[$key]);
                             break;
+                        case "outputReorder":
+                            $rule->setOutputReorder($r[$key]);
+                            break;
+                        case "inputReorder":
+                            $rule->setInputReorder($r[$key]);
+                            break;
                         default:
                             $rule->{$key} = $r[$key];
                             break;
