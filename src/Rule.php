@@ -102,9 +102,9 @@ abstract class Rule {
      */
     public function setExecuteType($executeType) {
         if(in_array(strtoupper($executeType),["ROW","NONE"])) {
-            $executeType=strtoupper($executeType);
+            $this->executeType=strtoupper($executeType);
         } else {
-            $executeType = "NONE";
+            $this->executeType = "NONE";
         }                
     }
     /**
