@@ -54,4 +54,9 @@ class SQL extends Rule {
                 break;
         }
     }
+
+    public function getNextResultRow() {
+        // handle statements and arrays... optionally through the output reorder
+    }
+
 }

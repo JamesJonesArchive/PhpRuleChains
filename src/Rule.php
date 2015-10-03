@@ -45,26 +45,6 @@ abstract class Rule {
      */
     private $output = [];
     /**
-     * @var \CF\RuleChains  
-     */
-    private $connectionsRC;
-    /**
-     * @var array
-     */
-    protected static $connections; // MySQLi-Connection, same for all subclasses
-    /**
-     * @var array
-     */
-    protected static $config;
-    /**
-     * Set the connections into the rule
-     * 
-     * @param type $connectionsRC
-     */
-    public function setConnectionsRC(\CF\RuleChains $connectionsRC) {
-        $this->connectionsRC = $connectionsRC;
-    }
-    /**
      * Sets the input reorder closure
      * 
      * @param \Closure $inputReorder
@@ -173,4 +153,10 @@ abstract class Rule {
      * @return mixed the result of the execution
      */
     abstract public function execute();
+    /**
+     * Returns next row in result array/iterator or returns false
+     * 
+     * @return mixed
+     */
+    abstract public function getNextResultRow();
 }
