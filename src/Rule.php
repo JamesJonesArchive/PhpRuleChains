@@ -17,16 +17,25 @@ abstract class Rule {
      */
     public $name;
     /**
-     * @var \Closure
+     * @var string
      */
     public $executeType;
+    /**
+     * @var string
+     */
     public $resultType;
+    /**
+     * @var string
+     */
     public $linkType;
-    private $inputReorder;
     /**
      * @var \Closure
      */
-    private $outputReorder;
+    public $inputReorder;
+    /**
+     * @var \Closure
+     */
+    public $outputReorder;
     /**
      * @var mixed
      */
