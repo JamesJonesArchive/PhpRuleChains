@@ -26,18 +26,17 @@ class SQL extends Rule {
         $stmt = self::getConnection($this->name)->prepare($rule);
         switch($this->executeType) {
             case "ROW":
-                foreach (((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input) as $key => $value) {
-                    $stmt->bindParam(":".$key, $value);
-                }
+                $stmt->execute((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input);
                 break;
             case "NONE":
                 // Do not bind
+                $stmt->execute();
                 break;
             default:
                 // Do not bind
+                $stmt->execute();
                 break;                
         }
-        $stmt->execute();
         switch($this->resultType) {
             case "ROW": 
                 $row = $stmt->fetch();
