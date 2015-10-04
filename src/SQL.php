@@ -54,9 +54,34 @@ class SQL extends Rule {
                 break;
         }
     }
-
+    /**
+     * Get the next available row or return false
+     * 
+     * @return mixed
+     */
     public function getNextResultRow() {
         // handle statements and arrays... optionally through the output reorder
+        if(!isset($this->output)) {
+            return false;
+        } elseif ($this->output instanceof PDOStatement) {
+            if($row = $this->output->fetch(PDO::FETCH_ASSOC)) {
+                return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
+            }
+            $this->output->closeCursor();
+            unset($this->output);
+            return false;
+        } elseif ((is_array($this->output))?!(array_keys($this->output) !== range(0, count($this->output) - 1)):false) {
+            if(empty($this->output)) {
+                unset($this->output);
+                return false;
+            }
+            $row = array_shift($this->output);
+            return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
+        } else {
+            $row = clone $this->output;
+            unset($this->output);
+            return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
+        }
     }
 
 }
