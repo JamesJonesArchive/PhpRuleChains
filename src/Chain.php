@@ -56,10 +56,18 @@ class Chain {
                 case "NONE": 
                     break;
                 case "LOOP": 
+                    // Find the matching endloop, extract the subarray as a new chain and loop
+                    // execution for each row
+                    while($row = $this->rules[$i]->getNextResultRow()) {
+                        
+                    }
                     break;
                 case "ENDLOOP": 
                     break;
                 case "NEXT":
+                    if((count($this->rules)-$i) > 1) {
+                        $this->rules[$i+1]->input = clone $this->rules[$i]->input;
+                    }
                     break;
                 default:
                     // do nothing
