@@ -15,7 +15,7 @@ namespace CF\RuleChains;
  */
 class Chain {
     private $rules;
-    public function __construct(array $config,array $rules,array $input,boolean $parseRules) {
+    public function __construct(array $config,array $rules,array $input = [],\boolean $parseRules = true) {
         ConnectionsRC::setConfig($config);
         if($parseRules) {
             $this->rules = \array_map(function($r) use($input) {                
