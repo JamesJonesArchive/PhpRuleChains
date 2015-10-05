@@ -14,18 +14,17 @@ namespace CF\RuleChains;
  * @author james
  */
 class Chain {
-    private $rules;
+    public $rules;
     public function __construct(array $config,array $rules,$input = [],$parseRules = true) {
         ConnectionsRC::setConfig($config);
         if($parseRules) {
-            $this->rules = \array_map(function($r) use($input) {                
-                $class = "\\CF\\RuleChains\\".$r['type'];
+            $this->rules = \array_map(function($r) use($input) {                     
+                $class = "\\CF\\RuleChains\\".((isset($r['type']))?((in_array($r['type'], ["SQL"]))?$r['type']:"SQL"):"SQL");
                 $rule = new $class;
                 foreach (\array_keys(\get_class_vars("\\CF\\RuleChains\\".$r['type'])) as $key) {
                     if(isset($r[$key])) {
                         switch($key) {
                             case "executeType":
-                                print("$key is ".$r[$key]."\n");
                                 $rule->setExecuteType($r[$key]);
                                 break;
                             case "resultType":
@@ -55,7 +54,6 @@ class Chain {
                 return $r;
             }, $rules);
         }
-        print_r($this->rules);
     }
     /**
      * Find the index of the corresponding endloop
