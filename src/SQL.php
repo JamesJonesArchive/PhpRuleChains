@@ -16,6 +16,19 @@ namespace CF\RuleChains;
 class SQL extends Rule {
     public $rule;
     /**
+     * Adds a : to the beginning of the array keys
+     * 
+     * @param array $row
+     * @return array
+     */
+    public static function createPrepareArray($row) {
+        $params = [];
+        foreach($row as $k=>$v){
+            $params[':'.$k] = $v;
+        }
+        return $params;
+    }
+    /**
      * Executes the SQL Rule
      */
     public function execute() {
@@ -23,10 +36,10 @@ class SQL extends Rule {
         foreach(((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input) as $key => $value) {
             $rule = str_replace('$'.$key, $value, $rule);            
         }            
-        $stmt = self::getConnection($this->name)->prepare($rule);
+        $stmt = self::getConnection($this->name)->pdo->prepare($rule);
         switch($this->executeType) {
             case "ROW":
-                $stmt->execute((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input);
+                $stmt->execute(self::createPrepareArray((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input));
                 break;
             case "NONE":
                 // Do not bind
