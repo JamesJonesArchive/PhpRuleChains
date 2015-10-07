@@ -34,9 +34,9 @@ class SQL extends Rule {
     public function execute() {
         $rule = $this->rule;
         foreach(((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input) as $key => $value) {
-            $rule = str_replace('$'.$key, $value, $rule);            
+            $rule = str_replace('$'.$key, $value, $rule);   
         }            
-        $stmt = self::getConnection($this->name)->pdo->prepare($rule);
+        $stmt = self::getConnection($this->name)->prepare($rule);
         switch($this->executeType) {
             case "ROW":
                 $stmt->execute(self::createPrepareArray((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input));
@@ -53,7 +53,8 @@ class SQL extends Rule {
         switch($this->resultType) {
             case "ROW": 
                 $row = $stmt->fetch();
-                $this->output = isFalse($row)?[]:[ $row ];
+                $this->output = ($row == false)?[]:[ $row ];
+                // $this->output = \isFalse($row)?[]:[ $row ];
                 break;
             case "RECORDSET": 
                 $this->output = &$stmt;
@@ -90,7 +91,7 @@ class SQL extends Rule {
             $row = array_shift($this->output);
             return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
         } else {
-            $row = clone $this->output;
+            $row = $this->output;
             unset($this->output);
             return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
         }

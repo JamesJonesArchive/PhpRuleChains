@@ -14,30 +14,13 @@ namespace CF\RuleChains;
 class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
     protected static $db = null;
     protected $conn = null;
+    public $chain;
     /**
      * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
     public function getConnection() {
-//        $pdo = new \PDO('sqlite::memory:');
-//        return $this->createDefaultDBConnection($pdo, ':memory:');
-        if ($this->chain === null) {
-            
-        }
-        
-        if ($this->conn === null) {
-            
-            if (self::$db == null) {
-                
-                self::$db = new Medoo\Medoo([
-                    'databaseType' => 'sqlite',
-                    'databaseFile' => ':memory:'
-                ]);
-                
-                $this->createTable();
-            }
-            $this->conn = $this->createDefaultDBConnection(self::$db->pdo, ':memory:');
-        }
-        return $this->conn;
+        return $this->createDefaultDBConnection(ConnectionsRC::getConnection("SQL", "localhost"), ':memory:');
+        // return ConnectionsRC::getConnection("SQL", "localhost");
     }
     public function createTable() {
         $sql = 'CREATE TABLE IF NOT EXISTS `account` (
@@ -51,8 +34,7 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
             `lang` varchar(50) NULL,
             PRIMARY KEY (`user_id`)
           );';
-        ConnectionsRC::getConnection("SQL", "localhost");
-        self::$db->pdo->exec($sql);
+        ConnectionsRC::getConnection("SQL", "localhost")->exec($sql);
     }
     /**
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
@@ -67,7 +49,7 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
     }
     
     public function setUp() {
-        $chain = new Chain([
+        $this->chain = new Chain([
             'SQL' => [
                 'localhost' => [
                     'database_type' => 'sqlite',
@@ -79,42 +61,33 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
                 "type" => "SQL",
                 "name" => "localhost",
                 "executeType" => "ROW",
-                "rule" => "SELECT 1 FROM DUAL"
+                "resultType" => "ROW",
+                "rule" => "SELECT * FROM account"
             ]
         ],[],true);
-        ConnectionsRC::$connections["SQL"]["localhost"] = $this->createDefaultDBConnection(ConnectionsRC::getConnection("SQL", "localhost")->pdo, ':memory:');
-//        $this->usfARMapi = $this->getMockBuilder('\USF\IdM\UsfARMapi')
-//        ->setMethods(array('getARMdb','getARMaccounts','getARMroles'))
-//        ->getMock();
-//        
-//        $this->usfARMapi->expects($this->any())
-//        ->method('getARMdb')
-//        ->will($this->returnValue($this->getMongoConnection()));
+        $this->createTable();
         parent::setUp();
     }
     
     //put your code here
     public function testConversion() {
-        $chain = new Chain([
-            'SQL' => [
-                'localhost' => [
-                    'database_type' => 'sqlite',
-                    'database_file' => ':memory:'
-                ]
-            ]
-        ],[
-            [
-                "type" => "SQL",
-                "name" => "localhost",
-                "executeType" => "ROW",
-                "rule" => "SELECT 1 FROM DUAL"
-            ]
-        ],[],true);
         // print_r($chain->rules);
         // Test rule count
-        $this->assertCount(1, $chain->rules);
+        $this->assertCount(1, $this->chain->rules);
         // Test class conversion
-        $this->assertTrue($chain->rules[0] instanceof \CF\RuleChains\SQL);
+        $this->assertTrue($this->chain->rules[0] instanceof \CF\RuleChains\SQL);
+        
+        $sth = ConnectionsRC::getConnection("SQL", "localhost")->prepare("SELECT * FROM account");
+        $sth->execute();
+        // print_r($sth->fetchAll());
+    }
+    
+    public function testExecute() {
+        $this->chain->execute();
+        print_r($this->chain->getChainResult());
+        print_r($this->chain->getChainResult());
+        print_r($this->chain->getChainResult());
+        print_r($this->chain->getChainResult());
     }
 
 }
