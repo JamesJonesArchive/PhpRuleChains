@@ -15,8 +15,10 @@ namespace CF\RuleChains;
  */
 class Chain {
     public $rules;
-    public function __construct(array $config,array $rules,$input = [],$parseRules = true) {
-        ConnectionsRC::setConfig($config);
+    public function __construct($config,array $rules,$input = [],$parseRules = true) {
+        if(isset($config)) {
+            ConnectionsRC::setConfig($config);
+        }
         if($parseRules) {
             $this->rules = \array_map(function($r) use($input) {                     
                 $class = "\\CF\\RuleChains\\".((isset($r['type']))?((in_array($r['type'], ["SQL"]))?$r['type']:"SQL"):"SQL");
@@ -31,7 +33,7 @@ class Chain {
                                 $rule->setResultType($r[$key]);
                                 break;
                             case "linkType":
-                                $rule->setResultType($r[$key]);
+                                $rule->setLinkType($r[$key]);
                                 break;
                             case "outputReorder":
                                 $rule->setOutputReorder($r[$key]);
@@ -88,7 +90,11 @@ class Chain {
      * @return mixed
      */
     public function getChainResult() {
-        if($row = $this->rules[count($this->rules) -1]->getNextResultRow()) {
+        echo count($this->rules)." : RuleCount\n";
+        print_r($this->rules);
+        if(empty($this->rules)) {
+            return false;
+        } else if($row = $this->rules[count($this->rules) -1]->getNextResultRow()) {
             return $row;
         } else {
             return false;
@@ -100,16 +106,22 @@ class Chain {
     public function execute() {
         for($i=0; $i < count($this->rules); $i++) {
             $this->rules[$i]->execute();
+            print_r($this->rules[$i]);
+            echo "LinkType: ".$this->rules[$i]->linkType."\n";
             switch($this->rules[$i]->linkType) {
                 case "NONE": 
                     break;
                 case "LOOP": 
                     // Find the matching endloop, extract the subarray as a new chain and loop
                     // execution for each row
-                    if((count($this->rules)-$i) > 1) {
+                    echo "DETECTED LOOP\n";
+                    if(((count($this->rules)-1)-$i) > 0) {
                         $endindex = $this->getEndLoopIndex($i + 1);
+                        echo $endindex.": Endindex\n";
                         while($row = $this->rules[$i]->getNextResultRow()) {
-                            $loopchain = new self($this->config,array_slice($this->rules,($i + 1),$endindex - ($i + 1)),$row,FALSE);
+                            echo "Offset: ".($i + 1)."\n";
+                            echo "Length: ".(($endindex - $i))."\n";
+                            $loopchain = new self(null,\array_slice($this->rules,($i + 1),($endindex - $i)),$row,FALSE);
                             $loopchain->execute();
                             $this->rules[$endindex]->output = $loopchain->getChainResult();
                         }

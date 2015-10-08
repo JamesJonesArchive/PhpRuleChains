@@ -39,6 +39,7 @@ class SQL extends Rule {
         $stmt = self::getConnection($this->name)->prepare($rule);
         switch($this->executeType) {
             case "ROW":
+                print_r(self::createPrepareArray((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input));
                 $stmt->execute(self::createPrepareArray((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input));
                 break;
             case "NONE":

@@ -60,9 +60,18 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
             [
                 "type" => "SQL",
                 "name" => "localhost",
-                "executeType" => "ROW",
+                "executeType" => "NONE",
                 "resultType" => "RECORDSET",
+                "linkType" => "LOOP",
                 "rule" => "SELECT * FROM account"
+            ],
+            [
+                "type" => "SQL",
+                "name" => "localhost",
+                "executeType" => "ROW",
+                "resultType" => "ROW",
+                "linkType" => "NONE",
+                "rule" => "SELECT :email,:user_name,:birthday,:age,:city,:promoted,:lang,:user_id"
             ]
         ],[],true);
         $this->createTable();
@@ -73,7 +82,7 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
     public function testConversion() {
         // print_r($chain->rules);
         // Test rule count
-        $this->assertCount(1, $this->chain->rules);
+        $this->assertCount(2, $this->chain->rules);
         // Test class conversion
         $this->assertTrue($this->chain->rules[0] instanceof \CF\RuleChains\SQL);
         
