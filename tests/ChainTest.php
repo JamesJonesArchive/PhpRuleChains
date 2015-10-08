@@ -61,7 +61,7 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
                 "type" => "SQL",
                 "name" => "localhost",
                 "executeType" => "ROW",
-                "resultType" => "ROW",
+                "resultType" => "RECORDSET",
                 "rule" => "SELECT * FROM account"
             ]
         ],[],true);

@@ -76,7 +76,7 @@ class SQL extends Rule {
         // handle statements and arrays... optionally through the output reorder
         if(!isset($this->output)) {
             return false;
-        } elseif ($this->output instanceof PDOStatement) {
+        } elseif ($this->output instanceof \PDOStatement) {
             if($row = $this->output->fetch()) {
                 return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
             }
