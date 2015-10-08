@@ -77,7 +77,7 @@ class SQL extends Rule {
         if(!isset($this->output)) {
             return false;
         } elseif ($this->output instanceof PDOStatement) {
-            if($row = $this->output->fetch(PDO::FETCH_ASSOC)) {
+            if($row = $this->output->fetch()) {
                 return (isset($this->outputReorder))?call_user_func_array($this->outputReorder, $row):$row;
             }
             $this->output->closeCursor();

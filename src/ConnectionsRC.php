@@ -43,6 +43,7 @@ class ConnectionsRC {
             switch ($type) {
                 case "SQL":
                     self::$connections[$type][$name] = (new \medoo(self::$config[$type][$name]))->pdo;
+                    self::$connections[$type][$name]->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
                     break;
                 default:
                     throw new Exception("No connection type defined for type: $type");
