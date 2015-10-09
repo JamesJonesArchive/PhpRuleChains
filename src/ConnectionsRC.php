@@ -47,10 +47,8 @@ class ConnectionsRC {
                     break;
                 default:
                     throw new Exception("No connection type defined for type: $type");
-                    break;
             }
         } 
-        //return (self::$connections[$type][$name] instanceof \PHPUnit_Extensions_Database_DB_IDatabaseConnection)?self::$connections[$type][$name]->getConnection():self::$connections[$type][$name];
         return self::$connections[$type][$name]; 
     }
     /**
