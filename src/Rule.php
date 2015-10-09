@@ -83,6 +83,14 @@ abstract class Rule {
         $this->input = $input;
     }
     /**
+     * Get the stored input object/array
+     * 
+     * @return mixed
+     */
+    public function getInput() {
+        return $this->input;
+    }
+    /**
      * Sets the output object/array
      * 
      * @param mixed $output
@@ -95,8 +103,8 @@ abstract class Rule {
      * 
      * @return mixed
      */
-    public function getInput() {
-        return $this->input;
+    public function getOutput() {
+        return $this->output;
     }
     /**
      * Properly sets the execute type

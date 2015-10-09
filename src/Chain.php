@@ -67,19 +67,24 @@ class Chain {
         $endindex = count($this->rules) - 1;
         if($endindex > $startindex) {
             $depthcount =0;
-            for($i=$startindex; $i < $endindex; $i++) {
-                switch($this->rules[$i]->linkType) {
-                    case "LOOP": 
-                        $depthcount++;
-                        break;
-                    case "ENDLOOP": 
-                        if($depthcount > 0) {
-                            $depthcount--;
-                        } else {
-                            $endindex = $i;
-                        }
-                        break;
+            try {
+                for($i=$startindex; $i < $endindex; $i++) {
+                    switch($this->rules[$i]->linkType) {
+                        case "LOOP": 
+                            $depthcount++;
+                            break;
+                        case "ENDLOOP": 
+                            if($depthcount > 0) {
+                                $depthcount--;
+                            } else {
+                                $endindex = $i;
+                                throw new \Exception('End index found');
+                            }
+                            break;
+                    }
                 }
+            } catch (\Exception $ex) {
+                return $endindex;
             }
         }
         return $endindex;
@@ -90,21 +95,17 @@ class Chain {
      * @return mixed
      */
     public function getChainResult() {
-        echo count($this->rules)." : RuleCount\n";
-        print_r($this->rules);
         if(empty($this->rules)) {
             return false;
-        } else if($row = $this->rules[count($this->rules) -1]->getNextResultRow()) {
-            return $row;
         } else {
-            return false;
+            return $this->rules[count($this->rules) -1]->getOutput();
         }
     }
     /**
      * Execute the chain
      */
     public function execute() {
-        for($i=0; $i < count($this->rules); $i++) {
+        for($i=0; $i < (count($this->rules)-1); $i++) {
             $this->rules[$i]->execute();
             print_r($this->rules[$i]);
             echo "LinkType: ".$this->rules[$i]->linkType."\n";
@@ -115,18 +116,29 @@ class Chain {
                     // Find the matching endloop, extract the subarray as a new chain and loop
                     // execution for each row
                     echo "DETECTED LOOP\n";
-                    if(((count($this->rules)-1)-$i) > 0) {
+                    if((count($this->rules)-($i+1)) > 0) {
+//                    if(((count($this->rules)-1)-$i) > 0) {
                         $endindex = $this->getEndLoopIndex($i + 1);
-                        echo $endindex.": Endindex\n";
+                        echo "LOOP START\n";
+                        echo $i.": LOOP RULE Index\n";
+                        $loopcount=0;
+                        $loopchain = NULL;
                         while($row = $this->rules[$i]->getNextResultRow()) {
+                            echo ($i+1).": INNER RULE Index\n";
+                            echo $endindex.": Endindex\n";
+                            $loopcount++;
+                            echo "INNER RULE ITERATION COUNTER: ".$loopcount."\n";
                             echo "Offset: ".($i + 1)."\n";
                             echo "Length: ".(($endindex - $i))."\n";
-                            echo "ArraySlice: ".\json_encode(\array_slice($this->rules,($i + 1),($endindex - $i)))."\n";
                             $loopchain = new self(null,\array_slice($this->rules,($i + 1),($endindex - $i)),$row,FALSE);
                             $loopchain->execute();
-                            $this->rules[$endindex]->output = $loopchain->getChainResult();
+                            if(in_array($this->rules[$endindex]->resultType, ['ROW','RECORDSET'])) {
+                                $this->rules[$endindex]->setOutput($loopchain->getChainResult());
+                            }
                         }
-                        $i = $endindex;
+                        echo "LOOP END\n";
+                        $i = ($endindex+1);
+                        echo $i.": Current Index\n";
                     }
                     break;
                 case "ENDLOOP": 
