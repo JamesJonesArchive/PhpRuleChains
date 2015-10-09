@@ -73,7 +73,7 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
                 "executeType" => "ROW",
                 "resultType" => "ROW",
                 "linkType" => "NONE",
-                "rule" => "SELECT :email,:user_name,:birthday,:age,:city,:promoted,:lang,:user_id"
+                "rule" => "SELECT :email as email,:user_name as user_name,:birthday as birthday,:age as age,:city as city,:promoted as promoted,:lang as lang,:user_id as user_id"
             ]
         ],[],true);
         $this->createTable();
@@ -95,10 +95,9 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
     
     public function testExecute() {
         $this->chain->execute();
-        print_r($this->chain->getChainResult());
-        print_r($this->chain->getChainResult());
-        print_r($this->chain->getChainResult());
-        print_r($this->chain->getChainResult());
+        $result = $this->chain->getChainResult();
+        echo "Chain Result: \n";
+        print_r($result);
     }
 
 }

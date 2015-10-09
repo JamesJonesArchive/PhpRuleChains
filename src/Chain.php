@@ -121,6 +121,7 @@ class Chain {
                         while($row = $this->rules[$i]->getNextResultRow()) {
                             echo "Offset: ".($i + 1)."\n";
                             echo "Length: ".(($endindex - $i))."\n";
+                            echo "ArraySlice: ".\json_encode(\array_slice($this->rules,($i + 1),($endindex - $i)))."\n";
                             $loopchain = new self(null,\array_slice($this->rules,($i + 1),($endindex - $i)),$row,FALSE);
                             $loopchain->execute();
                             $this->rules[$endindex]->output = $loopchain->getChainResult();
