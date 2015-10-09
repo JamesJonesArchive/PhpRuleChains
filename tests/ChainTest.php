@@ -20,8 +20,10 @@ class ChainTest extends \PHPUnit_Extensions_Database_TestCase {
      */
     public function getConnection() {
         return $this->createDefaultDBConnection(ConnectionsRC::getConnection("SQL", "localhost"), ':memory:');
-        // return ConnectionsRC::getConnection("SQL", "localhost");
     }
+    /**
+     * Create the mock table
+     */
     public function createTable() {
         $sql = 'CREATE TABLE IF NOT EXISTS `account` (
             `user_id` int(11),
