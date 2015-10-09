@@ -102,6 +102,14 @@ class Chain {
         }
     }
     /**
+     * Get the next available row or return false
+     * 
+     * @return mixed
+     */
+    public function getNextResultRow() {
+        return $this->rules[count($this->rules) -1]->getNextResultRow();
+    }
+    /**
      * Execute the chain
      */
     public function execute() {
