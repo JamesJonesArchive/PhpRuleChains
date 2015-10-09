@@ -145,14 +145,8 @@ abstract class Rule {
      * @throws Exception
      */
     public static function getConnection($name) {
-        echo __CLASS__."\n";
-        
-        //$pieces = explode("\\", __CLASS__);
         $pieces = explode("\\", get_called_class());
-        //var_dump(get_called_class());
-        // echo array_pop($pieces);
         return \CF\RuleChains\ConnectionsRC::getConnection(array_pop($pieces), $name);
-        // return ConectionsRC::getConnection(get_class($this), $name);
     }
     /**
      * Executes the current rule
