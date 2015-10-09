@@ -39,7 +39,6 @@ class SQL extends Rule {
         $stmt = self::getConnection($this->name)->prepare($rule);
         switch($this->executeType) {
             case "ROW":
-                print_r(self::createPrepareArray((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input));
                 $stmt->execute(self::createPrepareArray((isset($this->inputReorder))?call_user_func_array($this->inputReorder, $this->input):$this->input));
                 break;
             case "NONE":
@@ -54,8 +53,7 @@ class SQL extends Rule {
         switch($this->resultType) {
             case "ROW": 
                 $row = $stmt->fetch();
-                $this->output = ($row == false)?[]:[ $row ];
-                // $this->output = \isFalse($row)?[]:[ $row ];
+                $this->output = ($row === false)?[]:[ $row ];
                 break;
             case "RECORDSET": 
                 $this->output = &$stmt;
