@@ -43,7 +43,7 @@ abstract class Rule {
     /**
      * @var mixed
      */
-    private $output = [];
+    public $output = [];
     /**
      * Sets the input reorder closure
      * 

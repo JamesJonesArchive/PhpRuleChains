@@ -131,7 +131,7 @@ class Chain {
                             echo "Length: ".(($endindex - $i))."\n";
                             $loopchain = new self(null,\array_slice($this->rules,($i + 1),($endindex - $i)),$row,FALSE);
                             $loopchain->execute();
-                            print_r($loopchain->rules[count($loopchain->rules)-1]);
+                            echo "CURRENT LOOP RULE\n";
                             if(in_array($this->rules[$endindex]->resultType, ['ROW','RECORDSET'])) {
                                 $this->rules[$endindex]->setOutput($loopchain->getChainResult());
                             }
@@ -139,7 +139,6 @@ class Chain {
                         echo "LOOP END\n";
                         $i = ($endindex+1);
                         echo $i.": Current Index\n";
-                        print_r($this->rules[$endindex]->getOutput());
                     }
                     break;
                 case "ENDLOOP": 
