@@ -105,9 +105,8 @@ class Chain {
      * Execute the chain
      */
     public function execute() {
-        for($i=0; $i < (count($this->rules)-1); $i++) {
+        for($i=0; $i < count($this->rules); $i++) {
             $this->rules[$i]->execute();
-            print_r($this->rules[$i]);
             echo "LinkType: ".$this->rules[$i]->linkType."\n";
             switch($this->rules[$i]->linkType) {
                 case "NONE": 
@@ -132,6 +131,7 @@ class Chain {
                             echo "Length: ".(($endindex - $i))."\n";
                             $loopchain = new self(null,\array_slice($this->rules,($i + 1),($endindex - $i)),$row,FALSE);
                             $loopchain->execute();
+                            print_r($loopchain->rules[count($loopchain->rules)-1]);
                             if(in_array($this->rules[$endindex]->resultType, ['ROW','RECORDSET'])) {
                                 $this->rules[$endindex]->setOutput($loopchain->getChainResult());
                             }
@@ -139,6 +139,7 @@ class Chain {
                         echo "LOOP END\n";
                         $i = ($endindex+1);
                         echo $i.": Current Index\n";
+                        print_r($this->rules[$endindex]->getOutput());
                     }
                     break;
                 case "ENDLOOP": 

@@ -50,9 +50,11 @@ class SQL extends Rule {
                 $stmt->execute();
                 break;                
         }
+        echo "RESULT TYPE: ".$this->resultType."\n";
         switch($this->resultType) {
             case "ROW": 
                 $row = $stmt->fetch();
+                print_r($row);
                 $this->output = ($row === false)?[]:[ $row ];
                 break;
             case "RECORDSET": 
